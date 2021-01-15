@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-
     <data>
-
         <variable
             name="viewModel"
             type="com.parkseryu.witness.ui.home.HomeViewModel" />
@@ -21,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_ink_liquid"
-            android:text="우리는"
+            android:text="@string/home_text_view_top"
             android:textColor="@color/textColorGray"
             android:textSize="70sp"
             app:layout_constraintBottom_toTopOf="@id/tvMainDay"
@@ -33,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_ink_liquid"
-            android:text="일없습니당"
+            android:text="@string/home_text_view_center"
             android:textColor="@color/colorHighLight"
             android:textSize="70sp"
             app:layout_constraintBottom_toBottomOf="@id/guideline_Middle"
@@ -46,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_ink_liquid"
-            android:text="일째"
+            android:text="@string/home_text_view_bottom"
             android:textColor="@color/textColorGray"
             android:textSize="70sp"
             app:layout_constraintLeft_toLeftOf="parent"

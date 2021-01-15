@@ -10,4 +10,11 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+
+    <string name="home_text_view_top">우리는</string>
+    <string name="home_text_view_center">일없습니다</string>
+    <string name="home_text_view_bottom">일째</string>
+
+
 </resources>
