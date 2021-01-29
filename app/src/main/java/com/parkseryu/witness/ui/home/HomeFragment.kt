@@ -1,46 +1,35 @@
 package com.parkseryu.witness.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.parkseryu.witness.MainActivity
+import com.parkseryu.witness.MainActivity.Companion.startDay
 import com.parkseryu.witness.R
-import com.parkseryu.witness.dao.MeetDayDao
 import com.parkseryu.witness.databinding.FragmentHomeBinding
-import com.parkseryu.witness.db.AppDatabase
-import com.parkseryu.witness.repository.RepositoryImpl
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
+import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var homeViewDataBinding: FragmentHomeBinding
-    private val repository : MeetDayDao by lazy {  AppDatabase.getInstance(requireContext()).meetDayDao() }
+
     companion object {
         fun newInstance() = HomeFragment()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        CoroutineScope(Dispatchers.IO).launch {
-            Log.d("test", "${repository.getAll()}")
-        }
-    }
-
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
+            ViewModelProvider(this).get(HomeViewModel::class.java)
         homeViewDataBinding = DataBindingUtil.inflate<FragmentHomeBinding>(
             inflater,
             R.layout.fragment_home,
@@ -51,10 +40,28 @@ class HomeFragment : Fragment() {
             this.lifecycleOwner = this@HomeFragment
         }
 
+        homeViewModel.dbInitializerEvent.observe(viewLifecycleOwner, Observer {
+            MainActivity.id = R.layout.dialog_start_day
 
+            (requireActivity() as MainActivity).showDialog(
+                activity = requireActivity(),
+                context = requireContext(),
+                isCancelVisible = true,
+                okCallback = {
+                    homeViewModel.startDay.value = startDay
+                    homeViewModel.insertDay()
+                },
+                dismissCallback = {
+                }
+            )
+        })
 
-
-
+        homeViewModel.makeUiEvent.observe(viewLifecycleOwner, Observer {
+            tvFirst.text = homeViewModel.selectDay[0].topPhrase
+            val text = "${homeViewModel.diffDays}일"
+            tvMainDay.text = text
+            tvSecond.text = homeViewModel.selectDay[0].bottomPhrase
+        })
 
         return homeViewDataBinding.root
     }

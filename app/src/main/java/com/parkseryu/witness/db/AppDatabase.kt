@@ -6,14 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.parkseryu.witness.dao.MeetDayDao
-import com.parkseryu.witness.dto.MeetDay
+import com.parkseryu.witness.dto.MeetDayEntity
 
-@Database(entities = [MeetDay::class], version = 1, exportSchema = false)
+@Database(entities = [MeetDayEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun meetDayDao(): MeetDayDao
+    //abstract fun anniversaryDao(): AnniversaryDao
 
     companion object {
-        private val DB_NAME = "room-db"
+        private const val DB_NAME = "room-db"
         private var instance: AppDatabase? = null
 
 
@@ -33,7 +34,8 @@ abstract class AppDatabase : RoomDatabase() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                     }
-                }).build()
+                }).fallbackToDestructiveMigration()
+                .build()
         }
 
 
