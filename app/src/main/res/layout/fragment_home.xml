@@ -53,13 +53,15 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/RecyclerView_upcoming"
+            android:id="@+id/recyclerViewUpComing"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="@id/guideline_Bottom"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline_Middle" />
+            app:layout_constraintTop_toBottomOf="@id/guideline_Middle"
+            tools:listitem="@layout/recyclerview_anniversary_item"/>
 
 
         <androidx.constraintlayout.widget.Guideline

@@ -1,4 +1,3 @@
-/*
 package com.parkseryu.witness.dto
 
 import androidx.room.ColumnInfo
@@ -9,5 +8,5 @@ import androidx.room.PrimaryKey
 data class AnniversaryEntity(
     @PrimaryKey(autoGenerate = false) val whatDay: String,
     @ColumnInfo(name = "whenDay") val whenDay: String,
-    @ColumnInfo(name = "d_Day") val d_Day: String
-)*/
+    @ColumnInfo(name = "leftDay") val leftDay: String
+)

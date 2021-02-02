@@ -3,6 +3,8 @@ package com.parkseryu.witness
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.elevation = 0F
 
         val fab: FloatingActionButton = findViewById(R.id.fabAddAni)
         fab.setOnClickListener { view ->
@@ -53,12 +56,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -126,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         var id: Int = 0
         var startDay = ""
         private val now = System.currentTimeMillis()
-        val mDate = Date(now)
+        private val mDate = Date(now)
         private val simpleDateFormat = SimpleDateFormat("yyyyMMdd", Locale.KOREA)
         val today: String = simpleDateFormat.format(mDate)
     }

@@ -6,9 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.micromos.knpmobile.Event
-import com.parkseryu.witness.MainActivity.Companion.mDate
 import com.parkseryu.witness.MainActivity.Companion.today
 import com.parkseryu.witness.`object`.AnniversaryObject
+import com.parkseryu.witness.dto.AnniversaryEntity
 import com.parkseryu.witness.dto.MeetDayEntity
 import com.parkseryu.witness.repository.DayRepositoryImpl
 import kotlinx.coroutines.CoroutineScope
@@ -26,8 +26,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val startDay = MutableLiveData<String>()
 
     lateinit var selectDay: List<MeetDayEntity>
-    var diffDays = String()
+    lateinit var diffDays: String
 
+    lateinit var anniversaryDay: List<AnniversaryEntity>
     private val _makeUiEvent = MutableLiveData<Event<Unit>>()
     val makeUiEvent: LiveData<Event<Unit>> = _makeUiEvent
     private val firstDayFlag = 1
@@ -49,8 +50,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 )
             )
             var year = 1
-            gregorianCalendar.time = formatter.parse(startDay.value!!)!!
             for (i in 0..AnniversaryObject.remainDay.lastIndex) {
+                gregorianCalendar.time = formatter.parse(startDay.value!!)!!
                 if (AnniversaryObject.remainDayInt[i] == 0) {
                     gregorianCalendar.add(Calendar.YEAR, year)
                     year++
@@ -60,6 +61,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         AnniversaryObject.remainDayInt[i] - 1
                     )
                 }
+
                 var whenDay = anniversaryFormatter.format(gregorianCalendar.time)
                 when (gregorianCalendar.get(Calendar.DAY_OF_WEEK)) {
                     1 -> whenDay += AnniversaryObject.addWhenDay[0]
@@ -70,21 +72,30 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     6 -> whenDay += AnniversaryObject.addWhenDay[5]
                     7 -> whenDay += AnniversaryObject.addWhenDay[6]
                 }
-                var d_Day = String()
-                d_Day = if(mDate.time > gregorianCalendar.timeInMillis) "D+"
-                else "D-"
-                val calculation =  mDate.time - gregorianCalendar.timeInMillis
+
+                val todayTime = formatter.parse(today)!!.time
+                var leftDay = when {
+                    todayTime == gregorianCalendar.timeInMillis -> "D-DAY"
+                    todayTime > gregorianCalendar.timeInMillis -> "D+"
+                    else -> "D-"
+                }
+
+                val calculation = todayTime - gregorianCalendar.timeInMillis
                 var calculationDay = calculation / (24 * 60 * 60 * 1000)
                 calculationDay = abs(calculationDay)
-                d_Day += calculationDay
+                if (leftDay != "D-DAY")
+                    leftDay +=
+                        if (i == 0)
+                            calculationDay + firstDayFlag
+                        else calculationDay
 
-            /*    repository.insert(
+                repository.insert(
                     AnniversaryEntity(
                         whatDay = AnniversaryObject.remainDay[i],
                         whenDay = whenDay,
-                        d_Day = d_Day,
+                        leftDay = leftDay
                     )
-                )*/
+                )
             }
             init()
         }
@@ -92,7 +103,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun init() {
         CoroutineScope(Dispatchers.IO).launch {
-            selectDay = repository.select()
+            selectDay = repository.selectMeetDay()
             Log.d("selectTest", "$selectDay")
             if (selectDay.isEmpty()) {
                 _dbInitializerEvent.postValue(Event(Unit))
@@ -100,19 +111,29 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 val beginDate = formatter.parse(selectDay[0].startDay)!!.time
                 val endDate = formatter.parse(today)!!.time
                 diffDays = ((endDate - beginDate) / (24 * 60 * 60 * 1000) + firstDayFlag).toString()
-                Log.d("test", diffDays)
-              /*  repository.insert(
-                    AnniversaryEntity(
-                        whatDay =,
-                        whenDay =,
-                        d_Day =
-                    )
-                )*/
+                anniversaryDay = repository.selectAnniversaryDay()
+                val compareToStartDay = anniversaryDay[0].leftDay.substring(2).toInt()
+                if (diffDays.toInt() > compareToStartDay) {
+                    val flag = diffDays.toInt() - compareToStartDay
+                    for (i in 0..anniversaryDay.lastIndex) {
+                        var leftDay: String
+                        leftDay = when {
+                            anniversaryDay[i].leftDay == "D-DAY" -> {
+                                "D+$flag"
+                            }
+                            anniversaryDay[i].leftDay.substring(1, 2) == "+" -> {
+                                "D+${(anniversaryDay[i].leftDay.substring(2).toInt() + flag)}"
+                            }
+                            else -> "D-${(anniversaryDay[i].leftDay.substring(2).toInt() - flag)}"
+                        }
+                        if (leftDay == "D-0") leftDay = "D-DAY"
+                        repository.update(leftDay, anniversaryDay[i].leftDay)
+                        Log.d("test", anniversaryDay[i].leftDay)
+                        anniversaryDay = repository.selectAnniversaryDay()
+                    }
+                }
                 _makeUiEvent.postValue(Event(Unit))
-
             }
         }
     }
-
-
 }
