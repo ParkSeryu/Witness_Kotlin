@@ -6,8 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.micromos.knpmobile.Event
-import com.parkseryu.witness.MainActivity.Companion.today
 import com.parkseryu.witness.`object`.AnniversaryObject
+import com.parkseryu.witness.`object`.AnniversaryObject.today
 import com.parkseryu.witness.dto.AnniversaryEntity
 import com.parkseryu.witness.dto.MeetDayEntity
 import com.parkseryu.witness.repository.DayRepositoryImpl
@@ -23,14 +23,20 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _dbInitializerEvent = MutableLiveData<Event<Unit>>()
     val dbInitializerEvent: LiveData<Event<Unit>> = _dbInitializerEvent
 
-    val startDay = MutableLiveData<String>()
-
+    lateinit var startDay : String
     lateinit var selectDay: List<MeetDayEntity>
     lateinit var diffDays: String
 
     lateinit var anniversaryDay: List<AnniversaryEntity>
     private val _makeUiEvent = MutableLiveData<Event<Unit>>()
     val makeUiEvent: LiveData<Event<Unit>> = _makeUiEvent
+
+    private val _fabClickEvent = MutableLiveData<Event<Unit>>()
+    val fabClickEvent: LiveData<Event<Unit>> = _fabClickEvent
+
+    private val _fabAddAniClickEvent = MutableLiveData<Event<Unit>>()
+    val fabAddAniClickEvent: LiveData<Event<Unit>> = _fabAddAniClickEvent
+
     private val firstDayFlag = 1
     private val formatter = SimpleDateFormat("yyyyMMdd", Locale.KOREA)
     private val anniversaryFormatter = SimpleDateFormat("yyyy. MM. dd", Locale.KOREA)
@@ -44,14 +50,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         CoroutineScope(Dispatchers.IO).launch {
             repository.insert(
                 MeetDayEntity(
-                    startDay = startDay.value!!,
+                    startDay = startDay,
                     topPhrase = "우리는",
                     bottomPhrase = "입니다"
                 )
             )
             var year = 1
             for (i in 0..AnniversaryObject.remainDay.lastIndex) {
-                gregorianCalendar.time = formatter.parse(startDay.value!!)!!
+                gregorianCalendar.time = formatter.parse(startDay)!!
                 if (AnniversaryObject.remainDayInt[i] == 0) {
                     gregorianCalendar.add(Calendar.YEAR, year)
                     year++
@@ -111,8 +117,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 val beginDate = formatter.parse(selectDay[0].startDay)!!.time
                 val endDate = formatter.parse(today)!!.time
                 diffDays = ((endDate - beginDate) / (24 * 60 * 60 * 1000) + firstDayFlag).toString()
+                var compareToStartDay = diffDays.toInt()
+                Log.d("test", "$beginDate / $endDate / $diffDays")
                 anniversaryDay = repository.selectAnniversaryDay()
-                val compareToStartDay = anniversaryDay[0].leftDay.substring(2).toInt()
+                if (anniversaryDay[0].leftDay.substring(2) != "DAY") {
+                    compareToStartDay = anniversaryDay[0].leftDay.substring(2).toInt()
+                }
                 if (diffDays.toInt() > compareToStartDay) {
                     val flag = diffDays.toInt() - compareToStartDay
                     for (i in 0..anniversaryDay.lastIndex) {
@@ -135,5 +145,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 _makeUiEvent.postValue(Event(Unit))
             }
         }
+    }
+
+    fun onClickFab() {
+        _fabClickEvent.value = Event(Unit)
+    }
+
+    fun onClickFabAddAni() {
+        _fabAddAniClickEvent.value = Event(Unit)
     }
 }

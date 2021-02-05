@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
+
         <variable
             name="viewModel"
             type="com.parkseryu.witness.ui.home.HomeViewModel" />
@@ -19,37 +21,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_ink_liquid"
-            tools:text="@string/home_text_view_top"
             android:textColor="@color/textColorGray"
             android:textSize="70sp"
             app:layout_constraintBottom_toTopOf="@id/tvMainDay"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="@string/home_text_view_top" />
 
         <TextView
             android:id="@+id/tvMainDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_ink_liquid"
-            tools:text="일없습니다"
             android:textColor="@color/colorHighLight"
             android:textSize="70sp"
             app:layout_constraintBottom_toBottomOf="@id/guideline_Middle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="일없습니다" />
 
         <TextView
             android:id="@+id/tvSecond"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_ink_liquid"
-            tools:text="@string/home_text_view_bottom"
             android:textColor="@color/textColorGray"
             android:textSize="70sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvMainDay" />
+            app:layout_constraintTop_toBottomOf="@id/tvMainDay"
+            tools:text="@string/home_text_view_bottom" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -61,7 +63,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline_Middle"
-            tools:listitem="@layout/recyclerview_anniversary_item"/>
+            tools:listitem="@layout/recyclerview_anniversary_item" />
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -91,5 +93,53 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.93" />
+
+
+        <LinearLayout
+            android:id="@+id/outer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/fabAddAni" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginBottom="@dimen/fab_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:onClick="@{() -> viewModel.onClickFab()}"
+            app:srcCompat="@drawable/ic_plus" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddAni"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginBottom="90dp"
+            android:visibility="invisible"
+            app:elevation="6dp"
+            android:onClick="@{() -> viewModel.onClickFabAddAni()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:pressedTranslationZ="12dp"
+            app:srcCompat="@drawable/ic_plus" />
+
+        <TextView
+            android:id="@+id/prompt_fabAddAni"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="기념일 추가 하기"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/fabAddAni"
+            app:layout_constraintRight_toLeftOf="@id/fabAddAni"
+            app:layout_constraintTop_toTopOf="@id/fabAddAni" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

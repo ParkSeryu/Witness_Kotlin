@@ -1,6 +1,13 @@
 package com.parkseryu.witness.`object`
 
+import java.text.SimpleDateFormat
+import java.util.*
+
 object AnniversaryObject {
+    private val now = System.currentTimeMillis()
+    private val mDate = Date(now)
+    val simpleDateFormat = SimpleDateFormat("yyyyMMdd", Locale.KOREA)
+    val today: String = simpleDateFormat.format(mDate)
     val remainDay = listOf(
         "시작한날",
         "100일",

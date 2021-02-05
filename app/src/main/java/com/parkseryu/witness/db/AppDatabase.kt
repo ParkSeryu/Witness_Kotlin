@@ -10,7 +10,7 @@ import com.parkseryu.witness.dao.MeetDayDao
 import com.parkseryu.witness.dto.AnniversaryEntity
 import com.parkseryu.witness.dto.MeetDayEntity
 
-@Database(entities = [MeetDayEntity::class, AnniversaryEntity::class], version = 1, exportSchema = false)
+@Database(entities = [MeetDayEntity::class, AnniversaryEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun meetDayDao(): MeetDayDao
     abstract fun anniversaryDao(): AnniversaryDao
