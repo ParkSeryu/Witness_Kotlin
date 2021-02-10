@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "meetDay")
+@Entity(tableName = "meet_day")
 data class MeetDayEntity(
     @PrimaryKey(autoGenerate = false)val startDay : String,
     @ColumnInfo(name = "TopPhrases") val topPhrase : String,

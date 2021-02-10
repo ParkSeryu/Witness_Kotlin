@@ -10,7 +10,7 @@ interface MeetDayDao {
     @Insert
     fun insert(meetDayEntity: MeetDayEntity)
 
-    @Query("SELECT * FROM MEETDAY")
+    @Query("SELECT * FROM MEET_DAY")
     fun getAll(): List<MeetDayEntity>
 
 }

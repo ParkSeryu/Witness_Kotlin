@@ -12,14 +12,14 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.parkseryu.witness.ui.gallery.GalleryFragment"
+        android:id="@+id/nav_bucket_list"
+        android:name="com.parkseryu.witness.ui.bucketList.GalleryFragment"
         android:label=""
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.parkseryu.witness.ui.slideshow.SlideshowFragment"
+        android:id="@+id/nav_snail_letter"
+        android:name="com.parkseryu.witness.ui.snailLetter.SlideshowFragment"
         android:label=""
         tools:layout="@layout/fragment_slideshow" />
 </navigation>

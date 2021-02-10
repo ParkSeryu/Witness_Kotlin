@@ -7,16 +7,16 @@ import com.parkseryu.witness.dto.AnniversaryEntity
 import com.parkseryu.witness.dto.UserAnniversaryEntity
 
 @Dao
-interface AnniversaryDao {
+interface UserAnniversaryDao {
     @Insert
-    fun insert(anniversaryEntity: AnniversaryEntity)
+    fun insert(userAnniversaryEntity: UserAnniversaryEntity)
 
-    @Query("SELECT * FROM ANNIVERSARY")
-    fun getAll(): List<AnniversaryEntity>
+    @Query("SELECT * FROM USER_ANNIVERSARY")
+    fun getAll():List<UserAnniversaryEntity>
 
     @Query("UPDATE ANNIVERSARY SET LEFTDAY=:updateLeftDay WHERE LEFTDAY=:originalLeftDay")
     fun update(updateLeftDay : String, originalLeftDay : String)
 
-    @Query("SELECT * FROM ANNIVERSARY UNION ALL SELECT * FROM USER_ANNIVERSARY ORDER BY WHENDAY ASC")
-    fun getUnionTable() : List<AnniversaryEntity>
+
 }
+

@@ -7,13 +7,16 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.parkseryu.witness.dao.AnniversaryDao
 import com.parkseryu.witness.dao.MeetDayDao
+import com.parkseryu.witness.dao.UserAnniversaryDao
 import com.parkseryu.witness.dto.AnniversaryEntity
 import com.parkseryu.witness.dto.MeetDayEntity
+import com.parkseryu.witness.dto.UserAnniversaryEntity
 
-@Database(entities = [MeetDayEntity::class, AnniversaryEntity::class], version = 2, exportSchema = false)
+@Database(entities = [MeetDayEntity::class, AnniversaryEntity::class, UserAnniversaryEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun meetDayDao(): MeetDayDao
     abstract fun anniversaryDao(): AnniversaryDao
+    abstract fun userAnniversaryDao(): UserAnniversaryDao
 
     companion object {
         private const val DB_NAME = "room-db"
