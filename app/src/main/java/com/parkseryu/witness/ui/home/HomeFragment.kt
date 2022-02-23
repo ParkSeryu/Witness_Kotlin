@@ -2,6 +2,8 @@ package com.parkseryu.witness.ui.home
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Notification
+import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -13,7 +15,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.DatePicker
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -161,8 +165,8 @@ class HomeFragment : Fragment() {
             val adapter = RecyclerViewAdapter(homeViewModel)
             homeViewDataBinding.recyclerViewUpComing.adapter = adapter
             adapter.items = homeViewModel.anniversaryDay
-            for( i in 0 .. homeViewModel.anniversaryDay.lastIndex){
-                if(homeViewModel.anniversaryDay[i].leftDay.substring(1, 2) == "-"){
+            for (i in 0..homeViewModel.anniversaryDay.lastIndex) {
+                if (homeViewModel.anniversaryDay[i].leftDay.substring(1, 2) == "-") {
                     homeViewDataBinding.recyclerViewUpComing.scrollToPosition(i)
                     break
                 }
@@ -183,12 +187,7 @@ class HomeFragment : Fragment() {
             fabAddAni.visibility = View.INVISIBLE
             requireActivity().window.statusBarColor = getColor(requireContext(), R.color.colorBasic)
             home_layout.setBackgroundColor(getColor(requireContext(), R.color.colorBasic))
-            requireActivity().toolbar.setBackgroundColor(
-                getColor(
-                    requireContext(),
-                    R.color.colorBasic
-                )
-            )
+            requireActivity().toolbar.background = ResourcesCompat.getDrawable(resources, R.drawable.toolbar_border, null)
             prompt_fabAddAni.visibility = View.INVISIBLE
             prompt_fabAddAni.startAnimation(fabClose)
             fabAddAni.startAnimation(fabClose)
@@ -243,7 +242,7 @@ class HomeFragment : Fragment() {
         }
 
         alertDialog?.setOnDismissListener {
-           // dismissCallback.invoke()
+            // dismissCallback.invoke()
             alertDialog = null
         }
         alertDialog?.setCancelable(isCancelable)

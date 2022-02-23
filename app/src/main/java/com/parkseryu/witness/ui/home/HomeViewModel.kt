@@ -1,14 +1,17 @@
 package com.parkseryu.witness.ui.home
 
-import android.app.Application
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
-import android.text.TextUtils.substring
+import android.os.Build
 import android.util.Log
-import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.micromos.knpmobile.Event
+import com.parkseryu.witness.MainActivity
+import com.parkseryu.witness.R
 import com.parkseryu.witness.`object`.AnniversaryObject
 import com.parkseryu.witness.`object`.AnniversaryObject.today
 import com.parkseryu.witness.dto.AnniversaryEntity
@@ -24,6 +27,8 @@ import kotlin.math.abs
 import kotlin.properties.Delegates
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    private val context = getApplication<Application>().applicationContext
+
     private val repository = DayRepositoryImpl(application)
     private val _dbInitializerEvent = MutableLiveData<Event<Unit>>()
     val dbInitializerEvent: LiveData<Event<Unit>> = _dbInitializerEvent
@@ -54,6 +59,37 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         init()
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        val intent = Intent(context, MainActivity::class.java).apply{
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent : PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
+        val builder = Notification.Builder(context, "testChannel")
+            .setSmallIcon(R.drawable.witness_icon)
+            .setContentTitle("test")
+            .setContentText("test")
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "테스트 채널"
+            val descriptionText = "testChannel"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("testChannel", name, importance).apply {
+                description = descriptionText
+            }
+
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+            notificationManager.notify(1, builder.build())
+//
+        }
     }
 
     private fun init() {
@@ -82,7 +118,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             compareToStartDay = anniversaryDay[0].leftDay.substring(2).toInt()
         }
         if (diffDays > compareToStartDay) {
+            Log.d("test11", "$diffDays / $compareToStartDay")
             val flag = diffDays - compareToStartDay
+            Log.d("test111", "$flag")
             for (i in 0..anniversaryDay.lastIndex) {
                 var leftDay: String
                 leftDay = when {
@@ -97,18 +135,19 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 if (leftDay == "D-0") leftDay = "D-DAY"
 
                 repository.updateAnniversary(leftDay, anniversaryDay[i].leftDay)
-                Log.d("test", anniversaryDay[i].leftDay)
+                Log.d("test1", anniversaryDay[i].leftDay)
             }
         }
     }
 
     private fun setUserAnniversaryDay(diffDays: Int) {
         var compareToStartDay = diffDays
+        Log.d("test22", "$diffDays / $compareToStartDay")
         userAnniversaryDay = repository.selectUserAnniversaryDay()
-        if(userAnniversaryDay.isNotEmpty())
-        if (userAnniversaryDay[0].leftDay.substring(2) != "DAY") {
-            compareToStartDay = userAnniversaryDay[0].leftDay.substring(2).toInt()
-        }
+        if (userAnniversaryDay.isNotEmpty())
+            if (anniversaryDay[0].leftDay.substring(2) != "DAY") {
+                compareToStartDay = anniversaryDay[0].leftDay.substring(2).toInt()
+            }
         if (diffDays > compareToStartDay) {
             val flag = diffDays - compareToStartDay
             for (i in 0..userAnniversaryDay.lastIndex) {
@@ -125,7 +164,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 if (leftDay == "D-0") leftDay = "D-DAY"
 
                 repository.updateUserAnniversary(leftDay, userAnniversaryDay[i].leftDay)
-                Log.d("test", userAnniversaryDay[i].leftDay)
+                Log.d("test2", userAnniversaryDay[i].leftDay)
             }
         }
     }
@@ -244,8 +283,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _fabAddAniClickEvent.value = Event(Unit)
     }
 
-    fun setRecyclerViewItemColor(leftDay : String): Int{
-        return if(leftDay.substring(1, 2) == "-")
+    fun setRecyclerViewItemColor(leftDay: String): Int {
+        return if (leftDay.substring(1, 2) == "-")
             Color.rgb(81, 81, 81)
         else
             Color.GRAY
